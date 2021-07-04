@@ -101,7 +101,6 @@ int main(void)
   MX_RTC_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-	LL_RTC_BAK_SetRegister(RTC, LL_RTC_BKP_DR19, 0);
 
   /* USER CODE END 2 */
 
@@ -114,7 +113,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		hid_bootloader_Run();
 		
-		/* C13 ºôÎüµÆ²âÊÔ */
+		/* C13 ï¿½ï¿½ï¿½ï¿½ï¿½Æ²ï¿½ï¿½ï¿½ */
 	  /* C13 Breathing Lamp test */
 		static uint8_t pwmset;
 		static uint16_t time;
@@ -126,7 +125,7 @@ int main(void)
 			
 		   if(breathsw == 1)
 			{
-				 /* ºôÎüµÆ */
+				 /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 				 /* Breathing Lamp */
 				if(timeflag == 0)
 				{
@@ -139,11 +138,11 @@ int main(void)
 					if(time <= 110) timeflag = 0;
 				}
 
-				/* Õ¼¿Õ±ÈÉèÖÃ */
+				/* Õ¼ï¿½Õ±ï¿½ï¿½ï¿½ï¿½ï¿½ */
 				/* Duty Cycle Setting */
 				pwmset = time/120;
 
-				/* 20ms Âö¿í */
+				/* 20ms ï¿½ï¿½ï¿½ï¿½ */
 				/* 20ms Pulse Width */
 				if(timecount > 20) timecount = 0;
 				else timecount ++;

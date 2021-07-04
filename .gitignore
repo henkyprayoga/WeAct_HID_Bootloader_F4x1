@@ -53,3 +53,6 @@ ubuntu*.log
 
 # EEPROM image file (created by SITL)
 eeprom.bin
+
+MDK-ARM/WeAct_HID_Bootloader_F4x1/*
+MDK-ARM/startup_stm32f411xe.lst

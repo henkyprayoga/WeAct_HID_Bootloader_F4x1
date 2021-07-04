@@ -63,11 +63,11 @@
   * @{
   */
 
-#define USBD_VID     1155
+#define USBD_VID     4617
 #define USBD_LANGID_STRING     1033
-#define USBD_MANUFACTURER_STRING     "WeAct"
-#define USBD_PID_FS     22314
-#define USBD_PRODUCT_STRING_FS     "WeAct STM32 HID Bootloader"
+#define USBD_MANUFACTURER_STRING     "Klipper"
+#define USBD_PID_FS     48826
+#define USBD_PRODUCT_STRING_FS     "STM32 HID Bootloader"
 #define USBD_CONFIGURATION_STRING_FS     "STM32 HID Bootloader Config"
 #define USBD_INTERFACE_STRING_FS     "STM32 HID Bootloader Interface"
 
@@ -174,8 +174,8 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
   HIBYTE(USBD_VID),           /*idVendor*/
   LOBYTE(USBD_PID_FS),        /*idProduct*/
   HIBYTE(USBD_PID_FS),        /*idProduct*/
-  0x00,                       /*bcdDevice rel. 2.00*/
-  0x02,
+  0x00,                       /*bcdDevice rel. 3.00*/
+  0x03,
   USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
   USBD_IDX_PRODUCT_STR,       /*Index of product string*/
   USBD_IDX_SERIAL_STR,        /*Index of serial number string*/

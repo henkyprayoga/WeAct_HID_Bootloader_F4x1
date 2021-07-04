@@ -10,12 +10,14 @@ typedef void (*pFunction)(void);
 uint8_t USB_RX_Buffer[CUSTOM_HID_EPOUT_SIZE];
 uint8_t USB_TX_Buffer[CUSTOM_HID_EPIN_SIZE]; //USB data -> PC
 uint8_t new_data_is_received = 0;
-uint32_t updateflag; // ºó±¸´æ´¢Æ÷
+uint32_t updateflag; // ï¿½ó±¸´æ´¢ï¿½ï¿½
 uint16_t erase_page = 1;
 
-static uint8_t CMD_SIGNATURE[6] = {'W','e','A','c','t',':'}; // "WeAct: "
+//static uint8_t CMD_SIGNATURE[6] = {'W','e','A','c','t',':'}; // "WeAct: "
+static uint8_t CMD_SIGNATURE[7] = {'B','T','L','D','C','M', 'D'}; // "WeAct: "
 /* Command: <Send next data pack> */
 // static uint8_t CMD_DATA_RECEIVED[7] = {'W','e','A','c','t',':',2};// "WeAct: <cmd>"
+static uint8_t CMD_DATA_RECEIVED[8] = {'B', 'T', 'L', 'D', 'C', 'M', 'D', 2};
 
 #define FW_Version "V1.1"
 #define Flash_Size (0x1FFF7A22UL)
@@ -41,8 +43,8 @@ uint16_t mcuGetFlashSize(void)
 void hid_bootloader_Init(void)
 {
 	//HAL_GPIO_WritePin(C13_GPIO_Port,C13_Pin,GPIO_PIN_RESET);
-	// Èç¹ûÊÇÊ×´ÎÉÏµç Ôò³õÊ¼»¯ Íù0x8003FF4Ð´96Î»ID
-	// Í¬Ê±²»ÔËÐÐ´úÂë
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ ï¿½ï¿½0x8003FF4Ð´96Î»ID
+	// Í¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
 	if(bootloader_init() != 0)
 	{
 		while(1)
@@ -52,24 +54,25 @@ void hid_bootloader_Init(void)
 		}
 	}
 	
-	updateflag = LL_RTC_BAK_GetRegister(RTC,LL_RTC_BKP_DR19);
+	updateflag = LL_RTC_BAK_GetRegister(RTC,LL_RTC_BKP_DR4);
 	
-	if((HAL_GPIO_ReadPin(KEY_GPIO_Port,KEY_Pin) != BOOT_ENABLED) && (updateflag !=0x1234))
+	if((HAL_GPIO_ReadPin(KEY_GPIO_Port,KEY_Pin) != BOOT_ENABLED) && (updateflag !=0x424C))
 	{
 		//hid_bootloader_GotoApp();
 		hid_bootloader_Jump(USBD_HID_APP_DEFAULT_ADD);
 	}
 
-//	/* Enable Power Clock */
-//  __HAL_RCC_PWR_CLK_ENABLE();
-//  /* Allow access to Backup domain */
-//  LL_PWR_EnableBkUpAccess();  
-//  
-  	
-//  
-//  /* Forbid access to Backup domain */
-//  LL_PWR_DisableBkUpAccess();
-//	__HAL_RCC_PWR_CLK_DISABLE();
+	/* Enable Power Clock */
+ __HAL_RCC_PWR_CLK_ENABLE();
+ /* Allow access to Backup domain */
+ LL_PWR_EnableBkUpAccess();  
+ 
+	LL_RTC_BAK_SetRegister(RTC, LL_RTC_BKP_DR4, 0);
+
+ 
+ /* Forbid access to Backup domain */
+ LL_PWR_DisableBkUpAccess();
+	//__HAL_RCC_PWR_CLK_DISABLE();
 }
 
 void hid_bootloader_Jump(uint32_t addr)
@@ -98,7 +101,7 @@ void hid_bootloader_Run(void)
 		new_data_is_received = 0;
 		if (memcmp(USB_RX_Buffer, CMD_SIGNATURE, sizeof (CMD_SIGNATURE)) == 0) 
 		{
-			switch(USB_RX_Buffer[6])
+			switch(USB_RX_Buffer[7])
 			{
 				case CMD_ResetPage:
 
@@ -147,10 +150,11 @@ void hid_bootloader_Run(void)
 				current_Page++;
 				currentPageOffset = 0;
 				
-				memset(USB_TX_Buffer, 0, sizeof(USB_TX_Buffer)); 
-				USB_TX_Buffer[sprintf((char *)&USB_TX_Buffer,"WeAct:")] = CMD_Ack;
-				//ST usb¿â´æÔÚÒì³£
-				USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, USB_TX_Buffer, sizeof(USB_TX_Buffer)); // Ê¹ÓÃAC6±àÒëÕý³£ AC5½øÓ²¼þ´íÎó
+				//..memset(USB_TX_Buffer, 0, sizeof(USB_TX_Buffer)); 
+				//..USB_TX_Buffer[sprintf((char *)&USB_TX_Buffer, CMD_DATA_RECEIVED)] = CMD_Ack;
+				//ST usbï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì³£
+				//USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, USB_TX_Buffer, sizeof(USB_TX_Buffer)); // Ê¹ï¿½ï¿½AC6ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ AC5ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, CMD_DATA_RECEIVED, sizeof(CMD_DATA_RECEIVED)); // Ê¹ï¿½ï¿½AC6ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ AC5ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 	}
@@ -216,7 +220,7 @@ static uint8_t bootloader_init(void)
 	return result;
 }
 
-// return	²Á³ýÉÈÇø´óÐ¡ µ¥Î» KB
+// return	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ ï¿½ï¿½Î» KB
 static uint32_t erase_app_flash(void) 
 {
 	uint32_t *data;

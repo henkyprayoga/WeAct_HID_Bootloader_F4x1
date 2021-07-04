@@ -42,7 +42,6 @@ Core/Src/rtc.c \
 Core/Src/sys.c \
 Core/Src/stm32f4xx_it.c \
 Core/Src/stm32f4xx_hal_msp.c \
-Core/Src/key.c \
 Core/Src/hid_bootloader.c \
 USB_DEVICE/App/usb_device.c \
 USB_DEVICE/App/usbd_desc.c \
@@ -76,6 +75,8 @@ Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c \
 Middlewares/ST/STM32_USB_Device_Library/Class/CustomHID/Src/usbd_customhid.c  
+
+#Core/Src/key.c \
 
 # ASM sources
 ASM_SOURCES =  \
